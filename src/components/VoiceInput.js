@@ -1,57 +1,68 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import MicIcon from "./icons/MicIcon";
 import MicOffIcon from "./icons/MicOffIcon";
 
-export default function VoiceInput({ onTranscript, disabled }) {
-  const [isListening, setIsListening] = useState(false);
-
+export default function VoiceInput({ value, onChange, disabled }) {
   const recognitionRef = useRef(null);
+  const [isListening, setIsListening] = useState(false);
+  const [isSupported, setIsSupported] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const isSupported =
-    typeof window !== "undefined" &&
-    ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-  const toggleListening = () => {
-    if (!isSupported || disabled) return;
+    // Проверяем поддержку
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (!recognitionRef.current) {
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setIsSupported(false);
+      return;
+    }
 
-      const recognition = new SpeechRecognition();
+    setIsSupported(true);
 
-      recognition.lang = "ru-RU";
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-      recognition.continuous = false;
+    // Асинхронно помечаем монтирование
+    const timer = setTimeout(() => setMounted(true), 0);
 
-      recognition.onstart = () => setIsListening(true);
+    // Создаём один экземпляр Recognition
+    const recognition = new SpeechRecognition();
+    recognition.lang = "ru-RU";
+    recognition.interimResults = true;
+    recognition.continuous = true;
 
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        onTranscript(transcript);
-      };
+    recognition.onstart = () => setIsListening(true);
 
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error:", event.error);
+    recognition.onresult = (event) => {
+      let transcript = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+      }
+      onChange(value + " " + transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      if (recognitionRef.current?.listening) {
+        recognitionRef.current.start();
+      } else {
         setIsListening(false);
-      };
+      }
+    };
 
-      recognition.onend = () => setIsListening(false);
+    recognitionRef.current = recognition;
+    recognitionRef.current.listening = false;
 
-      recognitionRef.current = recognition;
-    }
+    return () => clearTimeout(timer);
+  }, [onChange, value]);
 
-    if (isListening) {
-      recognitionRef.current.stop();
-    } else {
-      recognitionRef.current.start();
-    }
-  };
-
-  if (!isSupported) {
+  if (!mounted || !isSupported)
     return (
       <button
         type="button"
@@ -61,7 +72,18 @@ export default function VoiceInput({ onTranscript, disabled }) {
         <MicOffIcon className="h-5 w-5" />
       </button>
     );
-  }
+
+  const toggleListening = () => {
+    if (disabled) return;
+
+    if (isListening) {
+      recognitionRef.current.listening = false;
+      recognitionRef.current.stop();
+    } else {
+      recognitionRef.current.listening = true;
+      recognitionRef.current.start();
+    }
+  };
 
   return (
     <button
