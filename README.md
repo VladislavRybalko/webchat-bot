@@ -4,7 +4,7 @@
 
 🌍 **Сайт проекта (Frontend):** [https://webchat-bot.vercel.app/](https://webchat-bot.vercel.app/)
 
-🔗 **Бэкенд репозиторий / API:** [https://your-backend-api.example.com](https://your-backend-api.example.com)
+🔗 **Бэкенд репозиторий / API:** ссылки пока нет
 
 ---
 
