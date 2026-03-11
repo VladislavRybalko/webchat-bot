@@ -2,7 +2,8 @@
 
 Это frontend-приложение для полнофункционального веб-чата с ИИ, созданное с использованием **Next.js**.
 
-🌍 **Сайт проекта (Frontend):** [https://your-frontend-project.vercel.app](https://your-frontend-project.vercel.app)
+🌍 **Сайт проекта (Frontend):** [https://webchat-bot.vercel.app/](https://webchat-bot.vercel.app/)
+
 🔗 **Бэкенд репозиторий / API:** [https://your-backend-api.example.com](https://your-backend-api.example.com)
 
 ---
