@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# WebChat Bot Frontend
 
-## Getting Started
+Это frontend-приложение для полнофункционального веб-чата с ИИ, созданное с использованием **Next.js**.
 
-First, run the development server:
+🌍 **Сайт проекта (Frontend):** [https://your-frontend-project.vercel.app](https://your-frontend-project.vercel.app)
+🔗 **Бэкенд репозиторий / API:** [https://your-backend-api.example.com](https://your-backend-api.example.com)
+
+---
+
+## Архитектура и почему Next.js?
+
+Проект использует **Next.js** специально для того, чтобы легко и быстро разместить клиентскую часть в виде статики на серверах **Vercel** **без полноценного монолитного бэкенда**.
+
+Реальный бэкенд (пример реализации) находится **в отдельном репозитории**.
+Next.js здесь выполняет роль внутреннего бэкенда (благодаря встроенным Route Handlers в папке `api/`), который позволяет безболезенно протестировать работу чата.
+
+### Как это работает:
+
+1. **Пользователь** открывает чат в браузере и вводит текст или нажимает кнопку голосового ввода.
+2. **Frontend (`src/app/page.js`)** отправляет POST-запрос на внутренний обработчик Next.js: `/api/chat`.
+3. **Route Handler (`/api/chat`)** принимает этот запрос и, действуя как "мост", отправляет HTTP-запрос к OpenAI API.
+4. **Next.js** передаёт ответ обратно на клиент в браузер для отрисовки.
+5. **Бэкенд**  таже логика просто реализованна с помощью Node Express
+
+
+## Структура проекта
+
+- `src/`
+  - `app/` - Основная директория Next.js App Router.
+    - `page.js` - Главная страница, на которой собираются все компоненты чата и происходит управление общим состоянием (отправка запросов, обработка ошибок).
+    - `layout.js` - Глобальный слой разметки.
+    - `globals.css` - Глобальные стили (включая Tailwind).
+    - `api/` - (Опционально) Серверные обработчики запросов (Route Handlers).
+  - `components/` - Переиспользуемые React-компоненты:
+    - `ChatInput.js` - Универсальное поле ввода (которое умеет автоматически расширяться, но сбрасывается обратно на 1 строку после отправки).
+    - `ChatMessage.js` - Отображение отдельного сообщения чата (с поддержкой переноса строк и аватарок).
+    - `VoiceInput.js` - Кнопка голосового ввода (Speech Recognition API для перевода речи в текст).
+    - `WelcomeScreen.js`, `ErrorToast.js`, `LoadingIndicator.js` - Вспомогательные элементы интерфейса (Приветствие, нотификации валидации и индикатор загрузки).
+    - `icons/` - Содержит набор SVG-иконок в виде React-компонентов (Mic, Send, ChatBubble, User).
+
+## Запуск проекта локально
+
+Клонируйте репозиторий и установите пакеты:
+
+```bash
+npm install
+```
+
+Запустите локальный сервер разработки:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Откройте [http://localhost:3000](http://localhost:3000) в браузере. Вы можете редактировать страницу через `src/app/page.js` — она автоматически обновится при сохранении.

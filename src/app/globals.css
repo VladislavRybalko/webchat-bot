@@ -3,11 +3,33 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Custom colors */
+  --color-primary: #0f1b4c;
+  --color-primary-light: #1a2d6d;
+  --color-primary-lighter: #243a80;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-surface: #1e3a8a;
+  --color-surface-light: #2b4fa3;
+  --color-user-bubble: #3b82f6;
+  --color-assistant-bubble: #1e3a5f;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-primary: var(--color-primary);
+  --color-primary-light: var(--color-primary-light);
+  --color-primary-lighter: var(--color-primary-lighter);
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-surface: var(--color-surface);
+  --color-surface-light: var(--color-surface-light);
+  --color-user-bubble: var(--color-user-bubble);
+  --color-assistant-bubble: var(--color-assistant-bubble);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -23,4 +45,104 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom scrollbar */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Microphone animation */
+
+@keyframes mic-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+  }
+}
+
+.mic-recording {
+  animation: mic-pulse 1.5s ease-in-out infinite;
+}
+
+/* Typing dots animation */
+
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+.typing-dot:nth-child(1) {
+  animation: typing-dot 1.4s infinite 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation: typing-dot 1.4s infinite 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation: typing-dot 1.4s infinite 0.4s;
+}
+
+/* Message animation */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.3s ease-out;
+}
+
+/* Toast animation */
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in-right 0.3s ease-out;
 }
